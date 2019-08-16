@@ -1,0 +1,92 @@
+import java.io.*;
+import java.util.*;
+
+package CS230;
+
+public class IP1 {
+    static LinkedList<String> my_list = new LinkedList<String>();
+    static Hashtable<String, Integer> my_hash = new Hashtable<String, Integer>();
+    
+    //Methods
+    static void listPush(String info) {
+        my_list.add(info);
+    }
+    
+    static void hashPush(String name, int id) {
+        if(my_hash.size() == 5) {
+            System.out.println("Sorry, the hashtable is already full. " + name + " is not invited.");
+        }
+        else {
+            my_hash.put(name, id);
+        }
+    }
+    
+    static void listPop(int spot) {
+        my_list.remove(spot);
+    }
+    
+    static void hashPop(String name) {
+        my_hash.remove(name);
+    }
+    
+    static void inputListInfo(String name, String city, String country, String phone, double contribution, int id) {
+         my_list.push(
+                    "Name: " + name + "\n"+
+                    "City: " + city + "\n"+
+                    "Country: " + country + "\n"+
+                    "Phone: " + phone + "\n"+
+                    "Contribution: " + contribution + "\n"+
+                    "ID: " + id
+                );
+    }
+    
+    static void showListInfo() {
+        Object[] new_list = my_list.toArray();
+        for(int i = 0; i < new_list.length; i++) {
+            System.out.println(new_list[i]);
+            System.out.println();
+        }
+    }
+    
+    static void showHashInfo() {
+        System.out.println(my_hash);
+    }
+    
+    
+    public static void main(String[] args) {
+        String my_file_s = "../contributors.csv";
+        String line = "";
+        String csvSplitBy = ",";
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(my_file_s))) {
+            while((line = br.readLine()) != null) {
+                String[] col = line.split(csvSplitBy);
+                my_list.add(
+                    "Name: " + col[0] + " " + col[1] + "\n"+
+                    "City: " + col[2] + "\n"+
+                    "Country: " + col[3] + "\n"+
+                    "Phone: " + col[4] + "\n"+
+                    "Contribution: " + col[5] + "\n"+
+                    "ID: " + col[6]
+                );
+            }
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+        
+        inputListInfo("Hunter Campbell", "Saint George", "USA", "5555555555", 100, 41); 
+        listPop(1);
+        showListInfo();
+        
+        hashPush("Hunter", 1);
+        hashPush("Billy", 2);
+        hashPush("Bob", 3);
+        hashPush("Kermit", 4);
+        hashPush("John", 5);
+        hashPush("Thanos", 6);
+        hashPop("Billy");
+        hashPush("Thor", 7);
+        showHashInfo();
+    }
+}
