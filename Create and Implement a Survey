@@ -1,0 +1,181 @@
+package survey;
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Survey {
+
+    //Static Variables
+    static int currentRespondentId = 0;
+    
+    //Instance Variables
+    static String surveyTitle;
+    
+    //Arrays
+    static int[][] respondentResults = new int[10][10];
+    /*This will print out like so, until changed:
+    questionNumber is the column
+    respondentId is the row
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}*/
+    static String[] surveyQuestions = new String[10];
+    static int[] questionSums = new int[10];
+    
+    //Constructors
+    public Survey() {
+        surveyTitle = "Customer Survey";
+    }
+    public Survey(String newSurveyTitle) {
+        currentRespondentId = 0;
+        surveyTitle = newSurveyTitle;
+    }
+    
+    //Methods
+    static int generateRespondentId() {
+        if (currentRespondentId <= 10)
+            currentRespondentId += 1;
+        return currentRespondentId;
+    }
+    static String displaySurveyResults() {
+        System.out.println(surveyTitle + " Results");
+        for(int[] row : respondentResults)
+            System.out.println(Arrays.toString(row));
+        return "Random Return Statement";
+    }
+    static int displayQuestionStats(int questionNumber) {
+        //Display the column (question)
+        System.out.println("Question " + questionNumber + " results:");
+        for(int i = 0; i < respondentResults[questionNumber - 1].length; i++)
+            System.out.println(respondentResults[i][questionNumber - 1]);
+        return questionNumber;
+    }
+    static String enterQuestions() {
+        Scanner askQuestionInput = new Scanner(System.in);
+        int questionCount = 1;
+        //Create questions 1-10
+        while(questionCount <= 10) {
+            System.out.println("What do you want the question to be for survey question " + questionCount + "?");
+            String usersQuestionInput = askQuestionInput.nextLine();
+            surveyQuestions[questionCount - 1] = usersQuestionInput;
+            questionCount++;
+        }
+        return "Hi";
+    }
+    static int logResponse(int respondentId, int questionNumber, int enteredResponse) {
+        //Checking if entered response is between 1-5
+        if(enteredResponse <= 5 && enteredResponse >= 1) {
+            //Respondent Id is the row, question number is the column
+            respondentResults[questionNumber - 1][respondentId - 1] = enteredResponse;
+        }
+        return enteredResponse;
+    }
+    static int sumQuestions(int questionNumber) {
+        for(int i = 0; i < respondentResults[questionNumber - 1].length; i++)
+            questionSums[questionNumber - 1] += respondentResults[i][questionNumber - 1];
+        return questionNumber;
+    }
+    static int topRatedQuestion() {
+        int max = questionSums[0], index = 0;
+        for(int i = 0; i < questionSums.length; i++) {
+            if(max < questionSums[i]) {
+                max = questionSums[i];
+                index = i;
+            }
+        }
+        System.out.println("Top Rated Question is: " + (index + 1));
+        return 1;
+    }
+    static int lowRatedQuestion() {
+        int min = questionSums[0], index = 0;
+        for(int i = 0; i < questionSums.length; i++) {
+            if(min > questionSums[i]) {
+                min = questionSums[i];
+                index = i;
+            }
+        }
+        System.out.println("Lowest Rated Question is: " + (index + 1));
+        return 1;
+    }
+    static String presentQuestion(int questionNumber) {
+        System.out.println(surveyQuestions[questionNumber - 1]);
+        return "HI";
+    }
+    static String presentQuestion(int questionNumber, int respondentId) {
+        Scanner respondentInput = new Scanner(System.in);
+        System.out.println("Respondent " + respondentId + ", on a scale of 1-5: ");
+        System.out.println(surveyQuestions[questionNumber - 1]);
+        int input = respondentInput.nextInt();
+        while(input < 1 || input > 5) {
+            System.out.println("I'm sorry, please choose a number between 1-5: ");
+            input = respondentInput.nextInt();
+        }
+        respondentResults[respondentId - 1][questionNumber - 1] = input;
+        return "HI";
+    }
+    static int conductSurvey() {
+        //Asking for how many respondents
+        Scanner numberOfRespondents = new Scanner(System.in);
+        System.out.println("How many respondents for " + surveyTitle + "?");
+        int respondentNumber = numberOfRespondents.nextInt();
+        while(respondentNumber < 1 || respondentNumber > 10) {
+            System.out.println("I'm sorry, please enter a number between 1-10");
+            respondentNumber = numberOfRespondents.nextInt();
+        }
+        
+        //Conducting survey
+        int questionNumber = 1, respondentCount = 1, questionCount = 1;
+        while(respondentCount <= respondentNumber) {
+            presentQuestion(questionNumber, respondentCount);
+            questionNumber += 1;
+            questionCount += 1;
+            if(questionCount == 11) {
+                respondentCount += 1;
+                questionCount = 1;
+                questionNumber = 1;
+            }
+        }
+        
+        return 1;
+    }
+    
+    public static void main(String[] args) {
+        //Unit 1 Testing if Code is Working:
+        generateRespondentId();
+        Survey newSurvey = new Survey();
+        //System.out.println(newSurvey.surveyTitle);
+        //System.out.println("Customer Id: " + currentRespondentId);
+        
+        //Unit 2 & 3 Testing if Code is Working:
+        enterQuestions();
+        System.out.println();
+        
+        conductSurvey();
+        displaySurveyResults();
+        System.out.println();
+        //displayQuestionStats(10);
+        sumQuestions(1);
+        sumQuestions(2);
+        sumQuestions(3);
+        sumQuestions(4);
+        sumQuestions(5);
+        sumQuestions(6);
+        sumQuestions(7);
+        sumQuestions(8);
+        sumQuestions(9);
+        sumQuestions(10);
+        //System.out.println("The sums of the questions are: ");
+        //System.out.println(Arrays.toString(questionSums));
+        topRatedQuestion();
+        lowRatedQuestion();
+        //presentQuestion(10);
+    }
+    
+}
